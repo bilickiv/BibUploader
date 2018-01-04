@@ -13,7 +13,8 @@ function doFormatting(){
     reformatter.format(pathToJSON, doDownloading(pathToJSON,end))
 }
 function doDownloading(pathToJSON,cb){
-    //downloader.download(pathToJSON,cb)
+    console.log("Finished formatting")
+    downloader.download(pathToJSON,cb)
 }
 function end(){
     console.log("Finished all")
