@@ -8,13 +8,14 @@ var request = require('request').defaults({ encoding: null });
 var async = require('async');
 var rimraf = require('rimraf');
 var ProgressBar = require('progress');
+var ObjTree = require('xml-objtree');
+
 console.log('TEST')
 module.exports.convert = function (path, cb){convert(path, cb)};
 //convert(pathToXml)
 function convert(xmlFilePath,cb) {
     console.log(xmlFilePath)
-    //removeFiles(xmlFilePath,XMLSplitter,cb);
-    console.log('End of processing')
+    removeFiles(xmlFilePath,XMLSplitter,cb);
     return cb()
 }
 function endOfProcessing(){
@@ -25,7 +26,23 @@ function XMLSplitter(xmlFilePath, fragment, cbend) {
 
     // Create a new xml parser with an array of xml elements to look for
     var parser = new xml2object([fragment], xmlFilePath);
+    var content;
+// First I want to read the file
+   /* fs.readFile(xmlFilePath, function read(err, data) {
+        if (err) {
+            throw err;
+        }
+        content = data;
 
+        // Invoke the next step here however you like
+        console.log(content);   // Put all of the code here (not the best solution)
+        var objTree = new ObjTree();
+
+        var json = objTree.parseXML(content); 
+    });*/
+
+   
+   
     // file splitting number
     var num = 0;
 
@@ -43,7 +60,7 @@ function XMLSplitter(xmlFilePath, fragment, cbend) {
 
     // Bind to the object event to work with the objects found in the XML file
     parser.on('object', function (name, obj) {
-        //console.log("Found an object: %s ", name);
+      //  console.log("Found an object: %s ", name);
 
         if (i < splitter - 1) {
             temp.push(obj);

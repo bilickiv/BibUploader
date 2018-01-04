@@ -43,7 +43,7 @@ function reformatAll(respJsonPath, cb) {
         }
 
     }, function () {
-        return cb(true);
+        //return cb(true);
     });
         //console.log(respJsonPath + files[i]);
         /*reformat(respJsonPath + files[i], function (res) {
@@ -66,7 +66,7 @@ function reformat(file, cb) {
             console.log(file);
         }
 
-        //console.log(new Date().toLocaleString() + " " + "Reformat " + "\"" + file + ".\"" + " file");
+        console.log(new Date().toLocaleString() + " " + "Reformat " + "\"" + file + ".\"" + " file");
 
         global.isFilePath = true;
 
