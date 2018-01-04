@@ -16,7 +16,6 @@ module.exports.convert = function (path, cb){convert(path, cb)};
 function convert(xmlFilePath,cb) {
     console.log(xmlFilePath)
     removeFiles(xmlFilePath,XMLSplitter,cb);
-    return cb()
 }
 function endOfProcessing(){
     console.log('End of processing')

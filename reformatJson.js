@@ -43,7 +43,7 @@ function reformatAll(respJsonPath, cb) {
         }
 
     }, function () {
-        //return cb(true);
+        return cb(true);
     });
         //console.log(respJsonPath + files[i]);
         /*reformat(respJsonPath + files[i], function (res) {
