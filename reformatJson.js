@@ -43,7 +43,7 @@ function reformatAll(respJsonPath, cb) {
         }
 
     }, function () {
-        return cb(true);
+        return cb(respJsonPath);
     });
         //console.log(respJsonPath + files[i]);
         /*reformat(respJsonPath + files[i], function (res) {
@@ -206,7 +206,7 @@ function reformat(file, cb) {
         }
 
         // 3. Download PDFs
-        //return cb(true);
+        return cb(true);
     });
 }
 function corporateNameReformat(json, obj) {

@@ -78,8 +78,8 @@ function down(respJsonPath, cb) {
 
         //var allBar = new ProgressBar('\n :current / :total', {total: allFiles});
         async.eachLimit(files, 1, function (file, next) {
-            var f = publicPath + file;
-            if(fs.lstatSync(f).isFile()){
+            var f = publicPath + file;         
+            if(fs.lstatSync(f).isFile() && f.endsWith(".json")){
                 currFile++;
                 downloadPDFToLocal(f, files.length, currFile, function (resp) {
                     if(resp === true){
@@ -122,6 +122,7 @@ function downloadPDFToLocal(file_path, allFiles, currFile, cb) {
 
     } catch (err){
         console.log(err);
+        return 
     }
 
     async.eachLimit(json, 1, function (obj, next) {
@@ -133,8 +134,26 @@ function downloadPDFToLocal(file_path, allFiles, currFile, cb) {
             //console.log(obj.id);
         }
         if(!fs.existsSync(d)){
-
-            request({ url : obj.files.file_path, time: true}, function (err, res, body) {
+            var dir = pdfs_dir + "/" + obj.eprintid;
+            if(!fs.existsSync(dir))
+                fs.mkdirSync(dir);
+            var f = pdfs_dir + "/" + obj.eprintid + "/" + path.basename(obj.files.file_path);
+            var response_stream = request.get(obj.files.file_path)
+            response_stream.on('error', function(err) {
+                    console.log(new Date().toLocaleString() + " Error");
+                      })
+                      response_stream.on('response', function (response) {
+                console.log(new Date().toLocaleString() + " Started the download: " + obj.files.file_path);
+                console.log(response.statusCode) // 200
+                console.log(response.headers['content-type']) // 'image/png'
+                console.log(response.headers[ 'content-length']) // 'image/png'
+                response_stream.pipe(fs.createWriteStream(f))
+                response_stream.on('end', function () { 
+                    console.log(new Date().toLocaleString() + " Finished the download" + obj.files.file_path);
+                    next()
+                })
+            })
+    /*request({ url : obj.files.file_path, time: true}, function (err, res, body) {
                 if (err)
                     console.log(err);
                 if (res.statusCode === 200) {
@@ -162,7 +181,7 @@ function downloadPDFToLocal(file_path, allFiles, currFile, cb) {
                     setTimeout(() => { next(); }, 1000);
 
                 }
-            });
+            });*/
         }else {
             // Downloaded file
             num++;

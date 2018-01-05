@@ -15,11 +15,10 @@ module.exports.convert = function (path, cb){convert(path, cb)};
 //convert(pathToXml)
 function convert(xmlFilePath,cb) {
     console.log(xmlFilePath)
-    removeFiles(xmlFilePath,XMLSplitter,cb);
+   // removeFiles(xmlFilePath,XMLSplitter,cb);
+   return cb()
 }
-function endOfProcessing(){
-    console.log('End of processing')
-}
+
 function XMLSplitter(xmlFilePath, fragment, cbend) {
     console.log('Splitting files')
 
