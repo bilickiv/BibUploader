@@ -9,16 +9,23 @@ let pathToXml = '../data/delmagyararchiv_XML.xml'
 let pathToJSON = '../data/json_files/'
 
 converter.convert(pathToXml, doFormatting)
+
+
 function doFormatting(){
-    console.log("finished slicing")
+    console.log("Finished XML2JSON")
     reformatter.format(pathToJSON, doDownloading)
 }
+
+
 function doDownloading(pathToJSON,cb){
     console.log("Finished formatting")
     downloader.download(pathToJSON,cb)
 }
+
+
 function doUploading()
 {
+    console.log("Finished downloading")
     uploader.upload(pathToJSON,end)
 }
 function end(){
