@@ -4,53 +4,77 @@ var fs = require("fs");
 var async = require('async');
 
 let rootPath = '../data/json_files/'
-let document = Document.loadSync('../data/json_files/public_files/split_10_public/21408/dm_1981_102.pdf');
-let title = document.getInfoSync('Title');
-let title1 = document.getTitleSync(); //The same of getInfo 
-let author = document.getAuthorSync();
-let subject = document.getSubjectSync();
-let keywords = document.getKeywordsSync();
-let numberOfPages = document.pagesCountSync();
+module.exports.extractTextFromPdf = function (rootPath, cb){loadFiles(rootPath, function () { 
+    console.log("Finished loading the list of files")
+    extractTextFromPdf(cb) 
+})};
 
-const allFilesSync = (dir, fileList = []) => {
+const allFilesSync = (dir) => {
+    let fp
     fs.readdirSync(dir).forEach(file => {
         const filePath = path.join(dir, file)
-        if (fs.statSync(filePath).isDirectory()) {
-            fileList = fileList.concat(allFilesSync(filePath))
+        fp = filePath
+        if (fs.statSync(filePath).isDirectory() && !filePath.includes('.DS_Store')) {
+            console.log('Processing directory' + filePath)
+            //fileList = fileList.concat(allFilesSync(filePath))
+            allFilesSync(filePath)
         }
         else {
-            console.log(filePath)
+            //console.log(filePath)
+            if(filePath.includes('.pdf'))
             fileList.push(filePath)
         }
     })
-    console.log(fileList)
+    //console.log(fileList)
+    console.log('Return from directory' + fp)
+    console.log('The number of pdf files is  ' + fileList.length)
     return fileList
 }
 let fileList = []
 text = ""
-loadFiles(rootPath, function () { console.log("Finished") })
-for (i = 0; i < numberOfPages; i++) {
-    text += document.getPageSync(i).getTextSync();
-}
+
+
 //console.log(text)
 
 function loadFiles(pdfPath, cb) {
-    allFilesSync(rootPath, fileList)
-    var allFiles = 0;
-    var currFile = 0;
+    allFilesSync(rootPath)
+    return cb()    
+}
+function extractTextFromPdf(cb)
+{
+    
     async.eachLimit(fileList, 1, function (file, next) {
-        var f = file;
-        console.log(f + "--");
-        if (fs.lstatSync(f).isFile() && f.endsWith(".pdf")) {
-            currFile++;
-            console.log(f + "file");
-            next()
+        if (fs.lstatSync(file).isFile() && file.endsWith(".pdf")) {
+            let textFile = file.replace(".pdf",".txt")
+            if(fs.existsSync(textFile))
+            {
+                setTimeout(() => { next(); }, 0)
+            }else
+            {
+                try{
+                    let document = Document.loadSync(file);
+                    let title = document.getInfoSync('Title');
+                    let title1 = document.getTitleSync(); //The same of getInfo 
+                    let author = document.getAuthorSync();
+                    let subject = document.getSubjectSync();
+                    let keywords = document.getKeywordsSync();
+                    let numberOfPages = document.pagesCountSync();
+                    for (i = 0; i < numberOfPages; i++) {
+                        text += document.getPageSync(i).getTextSync();
+                    }
+                    //console.log(text)
+                    fs.writeFileSync(textFile, text); 
+                }catch(err)
+                {
+                    console.log(err)
+                }
+                setTimeout(() => { next(); }, 0);
+            }            
         } else {
-            console.log(f + " directory");
+            //console.log(f + " directory");
             setTimeout(() => { next(); }, 0);
         }
-    }, function () {
+    }, function (err) {
         return cb(true);
     });
-
 }

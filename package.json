@@ -19,6 +19,7 @@
     "elasticsearch": "^13.3.1",
     "jsonld": "^0.4.12",
     "node-gyp": "^3.6.2",
+    "node-java": "^1.0.1",
     "node-pdfbox": "^0.1.9",
     "progress": "^2.0.0",
     "rimraf": "^2.6.1",
